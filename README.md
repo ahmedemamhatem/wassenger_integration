@@ -1,110 +1,134 @@
+---
+title: Wassenger Integration for Frappe/ERPNext
+author: Ahmed Emam
+version: 1.0
+license: MIT
+---
+
 # Wassenger Integration
 
-**Wassenger Integration** is a Frappe app that brings full WhatsApp messaging automation to your ERPNext or Frappe system.  
-Send messages (with or without PDF attachments), track delivery status, and receive replies—all from within your ERP workflow.
+**Wassenger Integration** is a powerful Frappe application designed to automate WhatsApp messaging workflows directly from your ERPNext system. It simplifies communication by enabling message sending, delivery tracking, and automated logging of responses—all within your existing ERP processes.
 
 ---
 
-## 🚀 Features
+## 🚀 Key Features
 
-- **Send WhatsApp messages** from any Frappe doctype  
-- **Attach and send PDFs** (e.g. invoices, quotes) via WhatsApp  
-- **Track delivery and read status** on sent messages  
-- **Automatically log WhatsApp replies** as inbound messages  
-- **User-friendly setup** via the Wassenger Settings page  
-- **Multi-tenant & production-ready**  
-
----
-
-## 🛠️ Installation
-
-### Requirements
-
-- Frappe/ERPNext v13+  
-- [bench CLI](https://github.com/frappe/bench)  
-- [Wassenger](https://wassenger.com/) account with API access  
-
-### To install:
-
-```shell
-cd /path/to/your/bench
-bench get-app $URL_OF_THIS_REPO --branch develop
-bench install-app wassenger_integration
-```
+- **WhatsApp Messaging from Frappe**: Send messages directly from any DocType.
+- **PDF Attachments**: Seamlessly attach and send documents (e.g., invoices, quotations).
+- **Status Tracking**: Monitor delivery and read receipts in real-time.
+- **Automated Reply Logging**: Replies are logged automatically in the system as inbound messages.
+- **Easy Configuration**: Intuitive setup via the Wassenger Settings page.
+- **Multi-Tenant Ready**: Designed for scalability in production environments.
 
 ---
 
-## ⚙️ Configuration
+## 🛠️ System Requirements
 
-### Set up your API Key & ERP URL
-
-1. Go to **Wassenger Settings** in your ERP  
-2. Enter your **Wassenger API Key**  
-3. Enter your **public ERP URL** (e.g. `https://erp.yourcompany.com`)  
-
-### Set up Webhooks in Wassenger
-
-1. Copy the **Status Update** and **Reply Webhook URLs** from Wassenger Settings  
-2. Paste them into your Wassenger dashboard under **Webhooks**
+- **Frappe/ERPNext**: Version 13 or higher
+- **bench CLI**: [Install from GitHub](https://github.com/frappe/bench)
+- **Wassenger Account**: With API access enabled
 
 ---
 
-## 📦 Usage
+## 📦 Installation Guide
 
-1. Go to any supported DocType (e.g. `WH Massage`)  
-2. Enter the recipient **phone number** and your **message**  
-3. *(Optional)* Attach a **PDF document**  
-4. Click the **Send WhatsApp Message** button  
+1. Navigate to your bench directory:
+    ```bash
+    cd /path/to/your/bench
+    ```
+
+2. Get the app:
+    ```bash
+    bench get-app https://github.com/ahmedemamhatem/wassenger_integration.git --branch develop
+    ```
+
+3. Install the app:
+    ```bash
+    bench install-app wassenger_integration
+    ```
+
+4. Restart your bench:
+    ```bash
+    bench restart
+    ```
 
 ---
 
-## 🔁 Receiving Replies & Status
+## ⚙️ Configuration Steps
 
-- Incoming WhatsApp **replies** are logged as `"inbound"` records  
-- Message **status** will auto-update as Wassenger delivers and reads the message  
+### Step 1: ERP Setup
+
+- Go to **Wassenger Settings** in your ERP
+- Enter your **Wassenger API Key**
+- Provide your **ERP Public URL** (e.g., `https://erp.yourcompany.com`)
+
+### Step 2: Configure Webhooks on Wassenger
+
+- Copy the **Status Update** and **Reply Webhook URLs** from Wassenger Settings
+- Paste them into the **Webhooks** section in your Wassenger dashboard
 
 ---
 
-## 🧑‍💻 Contributing
+## 📄 Usage Instructions
 
-We use **pre-commit** to check formatting and enforce code quality.
+1. Navigate to a supported DocType (e.g., `WH Message`)
+2. Enter the recipient's **phone number** and compose your **message**
+3. *(Optional)* Attach a **PDF document**
+4. Click **Send WhatsApp Message**
+
+---
+
+## 🔁 Automatic Logging and Status Updates
+
+- **Inbound Replies**: Logged as new documents under the designated inbound DocType
+- **Delivery Tracking**: Message status automatically updates based on Wassenger delivery/read receipts
+
+---
+
+## 🧑‍💻 Developer Guide
+
+We enforce coding standards and quality using **pre-commit hooks**.
 
 ### Install pre-commit:
 
-```shell
+```bash
 pip install pre-commit
 ```
 
 ### Enable it in your repo:
 
-```shell
+```bash
 cd apps/wassenger_integration
 pre-commit install
 ```
 
-### Pre-commit hooks include:
+### Hooks Used:
 
-- `ruff` (Python)  
-- `eslint` (JavaScript)  
-- `prettier` (JS/CSS/HTML)  
-- `pyupgrade` (Python syntax)  
+- `ruff` - Python linting
+- `eslint` - JavaScript linting
+- `prettier` - Code formatting (JS/CSS/HTML)
+- `pyupgrade` - Ensures modern Python syntax
 
-### Run all hooks:
+### Run all checks:
 
-```shell
+```bash
 pre-commit run --all-files
 ```
 
 ---
 
-## 📚 Documentation
+## 📚 Resources & References
 
-- [Wassenger API Reference](https://wassenger.com/docs)
-- [Frappe Framework Docs](https://frappeframework.com/docs)
-- See `docs/` directory for more usage and developer notes.
+- [Wassenger API Docs](https://wassenger.com/docs)
+- [Frappe Framework Documentation](https://frappeframework.com/docs)
+- Additional usage examples and developer notes in the `docs/` directory.
 
 ---
 
 ## 📝 License
 
-This app is licensed under the **MIT License**.
+This project is released under the **MIT License**. You are free to use, modify, and distribute it as per the license terms.
+
+---
+
+*Crafted with ❤️ by the ERPNext Developer Team*
