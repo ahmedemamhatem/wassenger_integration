@@ -7,14 +7,11 @@
  "field_order": [
   "api_key",
   "column_break_tnry",
-  "heading_ralt",
   "allow_send_pdf_attachment",
   "doctype_to_send_them_on_submit_section",
-  "heading_gcmr",
   "send_sales_invoice_on_submit",
   "send_purchase_invoice_on_submit",
   "column_break_hjlg",
-  "heading_mjkp",
   "send_payment_entry_on_submit",
   "send_delivery_note_on_submit",
   "section_break_jvve",
@@ -81,25 +78,13 @@
   {
    "fieldname": "column_break_tnry",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "heading_gcmr",
-   "fieldtype": "Heading"
-  },
-  {
-   "fieldname": "heading_mjkp",
-   "fieldtype": "Heading"
-  },
-  {
-   "fieldname": "heading_ralt",
-   "fieldtype": "Heading"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-06-12 09:19:07.927079",
+ "modified": "2025-06-12 09:45:40.623174",
  "modified_by": "Administrator",
  "module": "Wassenger Integration",
  "name": "Wassenger Settings",
