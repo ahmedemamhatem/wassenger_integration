@@ -134,43 +134,86 @@ def wassenger_webhook():
 
 
 @frappe.whitelist(allow_guest=True)
-def wassenger_inbound_webhook():
+def whatsapp_reply():
     """
-    Webhook endpoint for incoming WhatsApp messages (replies).
-    Point your Wassenger 'reply' webhooks here.
+    Receives inbound WhatsApp messages from Wassenger and inserts as inbound message in ERP.
     """
-    import json
-    if frappe.request.method == "POST":
-        try:
-            data = frappe.local.form_dict or json.loads(frappe.request.data or '{}')
-        except Exception:
-            data = {}
+    data = frappe.request.get_json()
+    if not data:
+        frappe.local.response.http_status_code = 400
+        return {"error": "No JSON data received"}
 
-        # Adjust these keys based on your actual Wassenger payload
-        message_id = data.get("id") or data.get("message", {}).get("id")
-        from_number = data.get("from") or data.get("contact", {}).get("phone")
-        # Try all possible keys for text
-        message_text = (
-            data.get("message") or
-            (data.get("body", {}).get("text") if isinstance(data.get("body"), dict) else None) or
-            data.get("text")
-        )
-        timestamp = data.get("timestamp") or data.get("created_at")
+    # Supported event type for inbound message
+    if data.get("event") != "message:in:new":
+        frappe.local.response.http_status_code = 400
+        return {"error": "Not an inbound message event"}
 
-        if not from_number or not message_text:
-            frappe.log_error(f"Invalid inbound webhook payload: {data}")
-            return "Invalid payload"
+    data_block = data.get("data", {})
 
-        # Insert as type 'in' (incoming/reply)
-        doc = frappe.get_doc({
-            "doctype": "WH Massage",
-            "wassenger_message_id": message_id,
-            "phone": from_number,
-            "send_message": message_text,
-            "status": "Received",
-            "type": "in"
-        })
-        doc.insert(ignore_permissions=True)
-        frappe.db.commit()
-        return "OK"
-    return "Invalid method"
+    # Prepare fields from webhook payload
+    message_id = data_block.get("id")
+    phone_from = data_block.get("fromNumber")
+    phone_to = data_block.get("toNumber")
+    body = data_block.get("body")
+    timestamp = data_block.get("timestamp")
+    contact = data_block.get("chat", {}).get("contact", {})
+    contact_name = contact.get("displayName") or contact.get("name")
+    contact_phone = contact.get("phone")
+    wa_status = data_block.get("status")
+    ack = data_block.get("ack")
+    event_type = data.get("event")
+
+    # Optionally, fetch more fields as needed for your DocType
+
+    # Insert inbound message as 'type = "in"'
+    doc = frappe.get_doc({
+        "doctype": "WH Massage",     # Use your actual DocType name
+        "wassenger_message_id": message_id,
+        "type": "in",
+        "phone": phone_from,
+        "send_message": body,
+        "status": wa_status
+    })
+    doc.insert(ignore_permissions=True)
+    frappe.db.commit()
+
+    return {"message": "Inbound WhatsApp message saved", "docname": doc.name}
+
+
+@frappe.whitelist(allow_guest=True)
+def whatsapp_status_update():
+    """
+    Receives WhatsApp message status updates from Wassenger and updates WH Massage status in ERP.
+    Uses the exact 'ack' value from 'data.ack' in the webhook payload.
+    """
+    data = frappe.request.get_json()
+    if not data:
+        frappe.local.response.http_status_code = 400
+        return {"error": "No JSON data received"}
+
+    message_id = data.get("id")
+    data_block = data.get("data", {})
+    ack = data_block.get("ack")
+
+    if not message_id or not ack:
+        frappe.local.response.http_status_code = 400
+        return {"error": "Missing 'id' or 'data.ack' in payload"}
+
+    # Find WH Massage with corresponding wassenger_message_id
+    wh_massage = frappe.get_all(
+        "WH Massage",
+        filters={"wassenger_message_id": message_id},
+        fields=["name"]
+    )
+
+    if not wh_massage:
+        frappe.local.response.http_status_code = 404
+        return {"error": f"No WH Massage found with wassenger_message_id '{message_id}'"}
+
+    # Directly set status to the exact ack value from data
+    doc = frappe.get_doc("WH Massage", wh_massage[0].name)
+    doc.status = ack
+    doc.save(ignore_permissions=True)
+    frappe.db.commit()
+
+    return {"message": f"Status for message {message_id} updated to {ack}"}
