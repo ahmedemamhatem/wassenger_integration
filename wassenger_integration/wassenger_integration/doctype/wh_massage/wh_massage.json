@@ -11,7 +11,14 @@
   "status",
   "wassenger_message_id",
   "type",
-  "file"
+  "file",
+  "section_break_cvte",
+  "reference_doctype",
+  "reference_name",
+  "column_break_crij",
+  "party_type",
+  "party",
+  "amended_from"
  ],
  "fields": [
   {
@@ -22,18 +29,19 @@
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "phone"
+   "label": "Phone"
   },
   {
    "fieldname": "send_message",
    "fieldtype": "Small Text",
-   "label": "send_message"
+   "label": "Send Message"
   },
   {
    "fieldname": "column_break_jjqk",
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "status",
    "fieldtype": "Select",
    "in_filter": 1,
@@ -47,6 +55,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "wassenger_message_id",
    "fieldtype": "Data",
    "label": "Wassenger Message ID",
@@ -54,6 +63,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "type",
    "fieldtype": "Select",
    "in_filter": 1,
@@ -61,7 +71,7 @@
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "type",
+   "label": "Type",
    "no_copy": 1,
    "options": "out\nin",
    "read_only": 1
@@ -70,12 +80,60 @@
    "fieldname": "file",
    "fieldtype": "Attach",
    "label": "File"
+  },
+  {
+   "fieldname": "section_break_cvte",
+   "fieldtype": "Section Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "reference_doctype",
+   "fieldtype": "Data",
+   "label": "Reference Doctype",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_crij",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "reference_name",
+   "fieldtype": "Data",
+   "label": "Reference Name",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "party_type",
+   "fieldtype": "Data",
+   "label": "Party Type",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "party",
+   "fieldtype": "Data",
+   "label": "Party",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "WH Massage",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2025-06-11 15:53:38.440449",
+ "modified": "2025-06-12 09:14:46.459394",
  "modified_by": "Administrator",
  "module": "Wassenger Integration",
  "name": "WH Massage",

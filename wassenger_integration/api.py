@@ -2,9 +2,29 @@ import frappe
 import requests
 
 @frappe.whitelist()
-def send_whatsapp_message(docname):
+def send_whatsapp_message(docname: str) -> None:
+    """
+    Send a WhatsApp message via Wassenger using the details from a 'WH Massage' doc.
+
+    - If the 'Allow Send PDF Attachment' setting is enabled and the doc has a PDF file,
+      attempts to send the PDF as an attachment (no caption).
+    - If the PDF sending fails (or is not allowed), sends the plain text message.
+    - Logs all errors and updates the doc status accordingly.
+
+    Args:
+        docname (str): The name of the 'WH Massage' document to send.
+    """
     doc = frappe.get_doc("WH Massage", docname)
-    api_key = frappe.db.get_single_value("Wassenger Settings", "api_key")
+
+    # --- Early return if status is already 'Failed' ---
+    if getattr(doc, "status", None) == "Failed":
+        frappe.msgprint("WhatsApp sending skipped: document marked as Failed due to invalid phone or other reason.")
+        return
+
+    # --- Get settings and API key ---
+    settings = frappe.get_single("Wassenger Settings")
+    api_key = settings.api_key
+    allow_send_pdf_attachment = settings.allow_send_pdf_attachment
     url = "https://api.wassenger.com/v1/messages"
     headers_json = {
         "Authorization": api_key,
@@ -14,8 +34,10 @@ def send_whatsapp_message(docname):
     sent = False
     file_tried = False
 
-    # 1. Try to send PDF if present and is a PDF (NO CAPTION!)
-    if getattr(doc, "file", None):
+    # --- Step 1: Optionally try to send PDF file ---
+    file_url = None
+    file_name = None
+    if allow_send_pdf_attachment and getattr(doc, "file", None):
         file_url = frappe.utils.get_url(doc.file)
         file_name = doc.file.split('/')[-1]
         if file_name.lower().endswith('.pdf'):
@@ -26,38 +48,38 @@ def send_whatsapp_message(docname):
                 "filename": file_name
             }
             try:
-                resp = requests.post(url, headers=headers_json, json=data)
-                if resp.status_code in [200, 201]:
-                    resp_json = resp.json()
-                    message_id = resp_json.get("id")
+                resp = requests.post(url, headers=headers_json, json=data, timeout=15)
+                if resp.status_code in (200, 201):
+                    message_id = resp.json().get("id")
                     frappe.db.set_value(doc.doctype, doc.name, {
                         "wassenger_message_id": message_id,
                         "status": "Sent"
                     })
-                    frappe.msgprint(f"PDF {file_name} sent successfully as WhatsApp attachment.")
+                    frappe.msgprint(f"PDF <b>{file_name}</b> sent successfully as WhatsApp attachment.")
                     sent = True
                     return
                 else:
-                    frappe.log_error(f"Failed to send PDF {file_name}. Response: {resp.text}")
-                    frappe.msgprint(f"Failed to send PDF. Will send as plain text message.")
+                    frappe.log_error(f"Wassenger PDF send failed [{docname}]: {resp.status_code} {resp.text}")
+                    frappe.msgprint(
+                        f"Failed to send PDF via WhatsApp (Status {resp.status_code}). Will attempt plain text message."
+                    )
             except Exception as e:
-                frappe.log_error(f"Error sending PDF file: {str(e)}")
-                frappe.msgprint(f"Error sending PDF file. Will send as plain text message.")
+                frappe.log_error(f"Error sending WhatsApp PDF [{docname}]: {str(e)}")
+                frappe.msgprint("Error sending PDF file. Will attempt plain text message.")
         else:
-            frappe.log_error(f"File {file_name} is not a PDF. Only PDF attachments are allowed.")
-            frappe.msgprint(f"File {file_name} is not a PDF. Only PDF attachments are allowed.")
+            frappe.log_error(f"File {file_name} in {docname} is not a PDF. Only PDF attachments are allowed.")
+            frappe.msgprint(f"File <b>{file_name}</b> is not a PDF. Only PDF attachments are allowed.")
 
-    # 2. Try to send plain text if not sent above and message exists
-    if not sent and doc.send_message:
+    # --- Step 2: Send plain text message if not sent already ---
+    if not sent and getattr(doc, "send_message", None):
         data = {
             "phone": doc.phone,
             "message": doc.send_message
         }
         try:
-            resp = requests.post(url, headers=headers_json, json=data)
-            if resp.status_code in [200, 201]:
-                resp_json = resp.json()
-                message_id = resp_json.get("id")
+            resp = requests.post(url, headers=headers_json, json=data, timeout=15)
+            if resp.status_code in (200, 201):
+                message_id = resp.json().get("id")
                 frappe.db.set_value(doc.doctype, doc.name, {
                     "wassenger_message_id": message_id,
                     "status": "Sent"
@@ -69,16 +91,18 @@ def send_whatsapp_message(docname):
                 sent = True
             else:
                 frappe.db.set_value(doc.doctype, doc.name, "status", "Failed")
-                frappe.log_error(f"Failed to send WhatsApp message. Response: {resp.text}")
-                frappe.msgprint("Failed to send WhatsApp message. See error log.")
+                frappe.log_error(f"Wassenger text send failed [{docname}]: {resp.status_code} {resp.text}")
+                frappe.msgprint("Failed to send WhatsApp message (text). See error log.")
         except Exception as e:
             frappe.db.set_value(doc.doctype, doc.name, "status", "Failed")
-            frappe.log_error(f"Error sending WhatsApp message: {str(e)}")
+            frappe.log_error(f"Error sending WhatsApp text [{docname}]: {str(e)}")
             frappe.msgprint("Error sending WhatsApp message. See error log.")
 
+    # --- Step 3: Final fallback if nothing was sent ---
     if not sent:
         frappe.db.set_value(doc.doctype, doc.name, "status", "Failed")
         frappe.msgprint("WhatsApp message could not be sent. See error log.")
+
 
 
 @frappe.whitelist(allow_guest=True)

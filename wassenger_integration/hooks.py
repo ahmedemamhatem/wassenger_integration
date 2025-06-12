@@ -10,9 +10,24 @@ app_license = "mit"
 
 # required_apps = []
 
+doc_events = {
+    "Sales Invoice": {
+        "on_submit": "wassenger_integration.send_on_submit.send_document_whatsapp_on_submit"
+    },
+    "Purchase Invoice": {
+        "on_submit": "wassenger_integration.send_on_submit.send_document_whatsapp_on_submit"
+    },
+    "Delivery Note": {
+        "on_submit": "wassenger_integration.send_on_submit.send_document_whatsapp_on_submit"
+    },
+    "Payment Entry": {
+        "on_submit": "wassenger_integration.send_on_submit.send_document_whatsapp_on_submit"
+    }
+}
+
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
-# 	{
+# 	{send_on_submit.py
 # 		"name": "wassenger_integration",
 # 		"logo": "/assets/wassenger_integration/logo.png",
 # 		"title": "Wassenger Integration",

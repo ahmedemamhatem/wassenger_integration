@@ -6,6 +6,17 @@
  "engine": "InnoDB",
  "field_order": [
   "api_key",
+  "column_break_tnry",
+  "heading_ralt",
+  "allow_send_pdf_attachment",
+  "doctype_to_send_them_on_submit_section",
+  "heading_gcmr",
+  "send_sales_invoice_on_submit",
+  "send_purchase_invoice_on_submit",
+  "column_break_hjlg",
+  "heading_mjkp",
+  "send_payment_entry_on_submit",
+  "send_delivery_note_on_submit",
   "section_break_jvve",
   "info_html"
  ],
@@ -26,13 +37,69 @@
   {
    "fieldname": "section_break_jvve",
    "fieldtype": "Section Break"
+  },
+  {
+   "description": "Choose which documents should automatically send a WhatsApp message (with optional PDF attachment) to the customer or supplier when they are submitted.",
+   "fieldname": "doctype_to_send_them_on_submit_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "send_sales_invoice_on_submit",
+   "fieldtype": "Check",
+   "label": "Send WhatsApp on Sales Invoice Submit"
+  },
+  {
+   "default": "0",
+   "fieldname": "send_purchase_invoice_on_submit",
+   "fieldtype": "Check",
+   "label": "Send WhatsApp on Purchase Invoice Submit"
+  },
+  {
+   "default": "0",
+   "fieldname": "send_delivery_note_on_submit",
+   "fieldtype": "Check",
+   "label": "Send WhatsApp on Delivery Note Submit"
+  },
+  {
+   "fieldname": "column_break_hjlg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "description": "If checked, a PDF copy of the document will be sent with the WhatsApp message.",
+   "fieldname": "allow_send_pdf_attachment",
+   "fieldtype": "Check",
+   "label": "Attach PDF Document"
+  },
+  {
+   "default": "0",
+   "fieldname": "send_payment_entry_on_submit",
+   "fieldtype": "Check",
+   "label": "Send WhatsApp on Payment Entry Submit"
+  },
+  {
+   "fieldname": "column_break_tnry",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "heading_gcmr",
+   "fieldtype": "Heading"
+  },
+  {
+   "fieldname": "heading_mjkp",
+   "fieldtype": "Heading"
+  },
+  {
+   "fieldname": "heading_ralt",
+   "fieldtype": "Heading"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-06-11 16:20:09.291087",
+ "modified": "2025-06-12 09:19:07.927079",
  "modified_by": "Administrator",
  "module": "Wassenger Integration",
  "name": "Wassenger Settings",
