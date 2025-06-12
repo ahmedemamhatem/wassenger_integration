@@ -1,10 +1,4 @@
 
----
-title: Wassenger Integration for Frappe/ERPNext
-author: Ahmed Emam
-version: 1.1
-license: MIT
----
 
 # 🚀 Wassenger Integration for Frappe/ERPNext
 
