@@ -43,7 +43,7 @@
   {
    "allow_on_submit": 1,
    "fieldname": "status",
-   "fieldtype": "Select",
+   "fieldtype": "Data",
    "in_filter": 1,
    "in_global_search": 1,
    "in_list_view": 1,
@@ -51,7 +51,6 @@
    "in_standard_filter": 1,
    "label": "Status",
    "no_copy": 1,
-   "options": "\nPending\nSent\nDelivered\nFailed\nRead",
    "read_only": 1
   },
   {
@@ -133,7 +132,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-12 09:14:46.459394",
+ "modified": "2025-06-12 09:54:54.245639",
  "modified_by": "Administrator",
  "module": "Wassenger Integration",
  "name": "WH Massage",
