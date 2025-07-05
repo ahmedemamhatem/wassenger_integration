@@ -46,6 +46,7 @@ class WHMassage(Document):
             )
         else:
             frappe.db.set_value(self.doctype, self.name, "status", "Pending")
+            self.reload()
 
     def on_submit(self):
         """
